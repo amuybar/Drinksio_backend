@@ -4,6 +4,8 @@ const Beer = require('../model/Beer');
 const { uploadSingleImage }  = require('../midleware/uploadBeerImages');
 
 // Get all beers
+// TODO: Am getting the beer details but am not getting  the image
+// I used multer so that i store images on the uploads folder and send the string to the database ,{post} [Route] is working fine i can send the data but getting the image to apear on my frontend has become an hustle.
 router.get('/beers', async (req, res) => {
   try {
     const beers = await Beer.find().populate('image');
@@ -28,22 +30,23 @@ router.get('/beers/:id', (req, res) => {
 });
 
 // Add a new beer
-router.post('/beers', uploadSingleImage, async (req, res, next) => { // Ensure this callback function is defined
+router.post('/beers', uploadSingleImage, async (req, res, next) => {
   try {
     const beerData = req.body;
 
     // If the image is uploaded, store the image path
     if (req.file) {
-      beerData.image = req.file.filename; // Store the original filename (without path)
+      // Store the original filename 
+      beerData.image = req.file.filename; 
     } else {
-      beerData.image = null; // Set image to null if no image uploaded
+      beerData.image = null; 
     }
 
-    // Save the beer data in the database (without image buffer)
+    // Save the beer data in the database 
     const beer = new Beer(beerData);
     await beer.save();
-
-    res.status(201).send(beer); // Send the created beer data (without image buffer)
+  // Send the created beer data 
+    res.status(201).send(beer); 
   } catch (error) {
     next(error); // Pass errors to error handler
   }

@@ -1,8 +1,8 @@
 const multer = require('multer');
-const path = require('path'); // To handle file paths
+const path = require('path'); s
 
 const storage = multer.diskStorage({
-  destination: 'upload_images', // Set the destination folder
+  destination: 'upload_images', 
   filename: (req, file, cb) => {
     // Generate a unique filename with current timestamp
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
