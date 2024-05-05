@@ -1,10 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+require('dotenv').config();
 const beerRoutes = require('./routes/beerRoutes');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://BeerDb:V7swfW3LC.9cBjy@cluster0.0gcxai4.mongodb.net/BeerDB', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_CONNECTION)
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -12,8 +15,13 @@ mongoose.connect('mongodb+srv://BeerDb:V7swfW3LC.9cBjy@cluster0.0gcxai4.mongodb.
     console.error('Error connecting to MongoDB:', err.message);
   });
 
-app.use(express.json());
-app.use(beerRoutes);
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
+// Routes
+app.use('/api/', beerRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
